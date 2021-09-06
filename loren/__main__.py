@@ -19,7 +19,10 @@ def action_render():
     render(
         template_path=args.template_path,
         output_path=args.output_path,
-        configurations=parse(args.configuration_path, **unknown_args),
+        configurations=parse(
+            args.configuration_path, 
+            **unknown_args),
+        
         **unknown_args
     )
 
