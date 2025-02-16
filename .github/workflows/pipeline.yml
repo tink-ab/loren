@@ -1,0 +1,30 @@
+name: Build, Test and Push
+env: 
+  VERSION: "loren-0.0.1-r${{ github.sha }}"
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:   
+  docker-ecr-push:
+    permissions:
+      id-token: write
+      contents: read
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run docker build and push to ECR action
+        uses: tink-ab/reusable-workflows/.github/actions/docker-ecr@master
+        with:
+          version: ${{ env.VERSION }}
+          gh-repo-username-read-permission: ${{ secrets.REPO_READ_USER }}
+          gh-repo-token-read-permission: ${{ secrets.REPO_READ_TOKEN }}
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          jfrog-read-username: ${{ secrets.JFROG_READ_USERNAME }}
+          jfrog-read-token: ${{ secrets.JFROG_READ_TOKEN }}
+          image-name: "loren"
